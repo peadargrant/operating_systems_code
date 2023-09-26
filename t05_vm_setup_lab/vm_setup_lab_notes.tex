@@ -1,0 +1,63 @@
+\chapter{VM setup lab}
+\label{ch:vm-setup-lab}
+
+Note carefully:
+\begin{itemize}
+\item \textbf{If you haven't completed your GitLab setup for lab work you need to go back to \autoref{ch:gitlab-setup}.}
+\item \textbf{If you haven't completed the XOA setup you need to go back to \autoref{ch:xoa-setup}!}
+\end{itemize}
+Do not continue without both of the above prerequisities done!
+
+\section{Setting up the virtual machine}
+
+\begin{enumerate}
+\item Login to \url{https://xoa.comp.dkit.ie/}
+\item On the left click \textbf{VMs}.
+\item Click the green \textbf{New VM} button.
+\item Drop down to \textit{Primary Pool} (most likely the only option).
+\item Under \textbf{Template} choose \textit{Ubuntu Server Quick Instance}.
+\item Change the \textbf{Name} to \texttt{grantp\_os\_linux}. \textbf{ALWAYS name EVERY VM you create starting with your student number}. \label{step:xoa-setup-vm-name}
+\item Under description you should enter something about the machine.
+  Very helpful when you have multiple machines for different modules and projects, e.g. Linux VM for Operating Systems.
+\item Under \textbf{Disks} change the \textbf{Name} to be the same as that in step~\ref{step:xoa-setup-vm-name}.
+\item Click the \textbf{Create} button.
+\item Choose the \textbf{Console} tab and you can see the machine starting up.
+\item Login to the machine as username \texttt{administrator} and usual lab password (will be given in class if needed). 
+\end{enumerate}
+
+\section{Clone your Lab code repository}
+
+\begin{enumerate}
+\item At the Bash prompt type git clone and the link to your GitLab repository:
+\begin{verbatim}
+git clone https://gitlab.comp.dkit.ie/grantp/os_labs.git
+#         ^
+#         | obviously replace with your link!
+\end{verbatim}
+\item List out your home directory using the command
+\begin{verbatim}
+ls -l
+#  ^
+#  | the -l switch puts it in detail format
+\end{verbatim}
+\item Change into the \texttt{os\_labs} folder using the \texttt{cd} command.
+\item Make a new folder for this week, \texttt{week02} using the \texttt{mkdir} command.
+\item Change into your newly created \texttt{week02} folder.
+\item Use the \texttt{lshw} command to print out information about the virtual machine's hardware.
+  Because it involves hardware it has to be run as root (UNIX word for administrator) using \texttt{sudo}:
+\begin{verbatim}
+sudo lshw
+\end{verbatim}
+\item To document that you got this far, we will capture this command's output to a text file using the shell redirection operator \texttt{>}:
+\begin{verbatim}
+sudo lshw > hardware.txt
+\end{verbatim}
+\item Use \texttt{ls} to confirm the \texttt{hardware.txt} file is there.
+  (If the name is wrong use \texttt{mv} to rename it.)
+\item Add, commit and push as follows:
+\begin{verbatim}
+git add hardware.txt
+git commit -m 'hardware of virtual machine'
+git push 
+\end{verbatim}
+\end{enumerate}

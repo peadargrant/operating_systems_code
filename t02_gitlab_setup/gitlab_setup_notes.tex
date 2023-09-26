@@ -1,3 +1,92 @@
 \chapter{GitLab setup}
 \label{ch:gitlab-setup}
 
+For the in-lab assessment you will record your weekly work in a GitLab repository.
+Your repository \textbf{MUST} be called \texttt{os\_labs}. 
+To assess your weekly work you will add the lecturer read-only to your repository.
+The steps below walk you through the process. 
+
+\textbf{It is very important that you follow the required file naming structures!}
+
+\section{Check if the Git command is installed}
+
+The lab machines already have Git installed.
+
+Macs should have Git installed but may need to install XCode to make the command available.
+
+Git is available for windows at:
+\url{https://git-scm.com/download/win}
+
+
+\section{Create your GitLab repository}
+
+\begin{enumerate}
+\item Login to \url{https://gitlab.comp.dkit.ie} with your DkIT username / password.
+\item Hit the blue \textbf{New Project} button.
+\item Choose \textbf{Create Blank Project}.
+\item For \textbf{Project name} enter \textit{exactly} \texttt{os\_labs}. \label{step:gitlab-setup-project-name}
+\item Drop down the \textbf{Pick a Group or Namespace} and in the \textit{Users} section pick your own username.
+\item The project slug field will auto-fill the project name you entered in step~\ref{step:gitlab-setup-project-name}.
+\item Leave \textbf{Visibility level} set to private.
+\item Make sure \textbf{Initialize repository with a README} is turned on.
+\item Click \textbf{Create Project}.
+\end{enumerate}
+
+\section{Work with your Git repository}
+
+To work with your GitLab repository we need to clone it to a local Git repository on your computer.
+We will then modify some files, add them, commit them and push the changes back to your GitLab repository. 
+
+\begin{enumerate}
+\item In GitLab find the front page of your \texttt{os\_labs} project and click the blue \texttt{Clone} button.
+\item Under \textbf{Clone with HTTPS} click the Copy button beside the link. 
+\item Use PowerShell / Terminal (on Mac) to navigate to the folder you want to keep your \texttt{os_labs} folder in.
+\item Type \texttt{git clone} and a space and then paste (right click) your link, e.g.
+\begin{verbatim}
+git clone https://gitlab.comp.dkit.ie/grantp/os_labs.git
+\end{verbatim}
+\item Follow the instructions to authenticate to GitLab.
+\item Change directory into your \texttt{os\_labs} folder:
+\begin{verbatim}
+cd os_labs
+\end{verbatim}
+\item Make a folder \texttt{week01} by typing:
+\begin{verbatim}
+mkdir week01
+\end{verbatim}
+\item Use Notepad++ (or any other editor) to modify the README.md file to simply include your name.
+\item Add a file in week01 named \textit{exactly} \texttt{firstlab.txt} stating that you have setup your Git repository.
+\item Add both of your newly created files to the \textit{staging area} in Git:
+\begin{verbatim}
+git add README.md
+git add week01/firstlab.txt
+\end{verbatim}
+\item Confirm both have been added by typing
+\begin{verbatim}
+git status
+\end{verbatim}
+\item Commit (or snapshot) the change by typing:
+\begin{verbatim}
+git commit -m 'first lab'
+#          ^
+#          |
+#          the -m switch means next argument is the commit message
+\end{verbatim}
+\item Push the changes to GitLab using
+\begin{verbatim}
+git push
+\end{verbatim}
+\item Confirm on your web browser you can see the changes in GitLab.
+
+\end{enumerate}
+
+\section{Adding lecturer}
+
+\begin{enumerate}
+\item Open your \texttt{os\_labs} project in GitLab if not already open. 
+\item Under \textbf{Manage} click \textbf{Members}.
+\item Click \textbf{Invite Members}.
+\item In \textbf{Username} enter \texttt{grantp}.
+\item Under \textbf{Role} choose \textit{Guest}.
+\item Click \textbf{Invite}.
+\end{enumerate}
