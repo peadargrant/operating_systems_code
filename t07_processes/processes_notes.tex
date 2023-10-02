@@ -1,3 +1,84 @@
 \chapter{Processes}
 \label{ch:processes}
 
+% \begin{goals}
+%   \begin{enumerate}
+%   \item \textbf{Differentiate} among running, ready and blocked processes.
+%   \item \textbf{Describe} the transitions among process states.
+%   \end{enumerate}
+% \end{goals}
+
+% \begin{reading}
+%   \begin{enumerate}
+%     \item
+%     \citet[Chapter 4]{arpaci-dusseau:2015:operating}\\
+%     \url{http://pages.cs.wisc.edu/~remzi/OSTEP/cpu-mechanisms.pdf}
+%   \end{enumerate}
+% \end{reading}
+
+\section{Programs and processes}
+
+\begin{description}
+\item[Program] is a sequence of instructions.\\
+  Also called a \textbf{task} or \textbf{activity}
+\item[Process] is an instance of a particular program.
+\end{description}
+
+It is very important that you don't confuse the terms program and process.
+They aren't the same!
+
+\section{Role of the OS}
+
+The OS must:
+\begin{enumerate}
+\item allocate resources to processes
+\item enable processes to share and exchange information,
+\item protect the resources of each process from other processes and
+\item enable synchronization among processes
+\end{enumerate}
+
+
+\section{System calls}
+
+A process uses what are called System Calls to (primarily) access hardware. 
+
+\begin{itemize}
+\item A system call is used by application (user) programs to request service from the operating system.
+\item An operating system (i.e. its kernel) can access a system's hardware directly, but a user program is not given direct access to the hardware.
+\item This is done so that the kernel can mediate all access to hardware.
+\item Program makes a system call to ask the kernel to take some action on its behalf. 
+\end{itemize}
+
+\section{Multiprogramming}
+
+\section{Process Control Blocks}
+
+\section{Process creation}
+
+\section{Process terminaton}
+
+\section{2-state model}
+
+\subsection{Process states}
+
+\begin{description}
+\item[Running:] process is running currently on the CPU.
+\item[Ready:] process could run if the operating system chose to.
+%\item[Blocked:] process must wait for an I/O operation to complete.
+\end{description}
+
+
+\subsection{Transition}
+
+
+\section{3-State process model}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=1.0\linewidth]{state_transitions}
+  \caption{Process state transitions}
+  \label{fig:process-state-transitions}
+\end{figure}
+
+
+\section{5-state process model}
