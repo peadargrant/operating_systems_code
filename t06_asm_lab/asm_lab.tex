@@ -1,0 +1,134 @@
+\chapter{Assembly language lab}
+\label{ch:assembly-language-lab}
+
+In this lab we will do some basic exercises involving assembly language.
+The aim of this lab are:
+\begin{enumerate}
+\item To let you practically see the ideas from our discussion on programs.
+\item To see how assembly language differs among different processor families.
+\item To build some familiarity with the UNIX tools at the command-line.
+\end{enumerate}
+
+\section{Pre-requisites}
+
+Before doing the rest of this lab make sure that you have:
+\begin{enumerate}
+\item Set up your GitLab repository for lab work.
+\item Created a linux VM on XOA.
+\item Cloned your gitlab repository onto your VM into \texttt{os\_labs}.
+\end{enumerate}
+
+\section{Exercise}
+
+All of these steps are to be completed on your XOA VM.
+
+\begin{enumerate}
+
+\item
+  Use \texttt{cd} to change into the \texttt{os\_labs} folder.
+
+\item
+  Make a new folder called \texttt{week03}.
+
+\item
+  Change directory into your \texttt{week03} folder.
+  (To check you're in the right place use \texttt{pwd} command.)
+  
+\item 
+  Use the \texttt{nano} text editor to create the following C file named \texttt{hello.c}:\\
+  \inputminted{c}{hello.c}
+
+\item
+  Compile this C program to an executable program using the command:
+\begin{verbatim}
+gcc -o hello hello.c
+\end{verbatim}
+  The \texttt{-o} option tells \texttt{gcc} to name the output file \texttt{hello}.
+
+\item
+  Run this program by typing:
+\begin{verbatim}
+./hello
+\end{verbatim}
+  and confirm that it does in fact print ``Hello world''.
+
+\item \label{step:asm-creation}
+  The \texttt{gcc} compiler by default takes C code and produces machine code.
+  We can get it instead to output assembly language using the \texttt{-S switch}.
+  Try it to get \texttt{hello.asm} as follows:
+\begin{verbatim}
+gcc -s -o hello.asm hello.c 
+\end{verbatim}
+
+\item \label{step:add-to-git}
+  Add \texttt{hello.c} to your git repository:
+\begin{verbatim}
+git add hello.c
+\end{verbatim}
+
+\item
+  Open the \texttt{hello.asm} file using \texttt{nano}.
+  It's not particularly understandable is it?
+
+\item
+  Add \texttt{hello.asm} to git using the same command as in step \ref{step:add-to-git}.
+  
+\item
+  Let's now make a simpler file named \texttt{add2sub1.c}.
+  This is a function, again in C, that adds two numbers and subtracts a third:
+  \inputminted{c}{add2sub1.c}
+
+\item
+  Use \texttt{gcc} to convert this to \texttt{add2sub1.asm} (using step \ref{step:asm-creation} as a guide).
+
+\item
+  Open \texttt{add2sub1.asm} in \texttt{nano}.
+  Can you find the add and subtract instruction in assembly language?
+
+\item
+  Add \texttt{add2sub1.c} and \texttt{add2sub1.asm} to git.
+  
+\item
+  Now let's see what happens if we try compiling to assembly language for an ARM processor instead.
+  To do this we'll install a cross compiler for ARM on our \texttt{x86\_64} virtual machine/ 
+  Use \texttt{apt} to install the following packages:\\
+  \texttt{gcc-aarch64-linux-gnu} and \texttt{binutils-aarch64-linux-gnu}
+  
+\item 
+  Create \texttt{add2sub1\_aarch64.asm} using the command:
+\begin{verbatim}
+aarch64-linux-gnu-gcc add2sub1.c -s -o add2sub1_aarch64.asm
+\end{verbatim}
+
+\item
+  Examine the \texttt{add2sub1\_aarch64.asm} file in a text editor.
+  Does this look different to the \texttt{x86\_64} assembly language?
+  Can you find the add and subtract instructions?
+
+\item
+  Add \texttt{add2sub1\_aarch64.asm} to git.
+  
+\end{enumerate}
+
+\section{Recording your lab work}
+
+\begin{enumerate}
+\item Type
+\begin{verbatim}
+git status
+\end{verbatim}
+  and confirm that all the files required above have been added to git.
+\item
+  Commit your work to your Git repository on your XOA VM with a descriptive message.
+\begin{verbatim}
+git commit -m 'week 3 lab work on assembly language'
+\end{verbatim}
+\item
+  Push your commits to GitLab using
+\begin{verbatim}
+git push
+\end{verbatim}
+\end{enumerate}
+
+Your work is done for today!
+
