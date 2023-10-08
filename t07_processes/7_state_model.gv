@@ -6,6 +6,11 @@ subgraph cluster_inmemory {
 	blocked [fillcolor=lightpink, style="filled"];
 	}
 	init, zombie [fillcolor=plum1, style="filled"];
+subgraph cluster_swappedout {
+	readysuspended [ fillcolor="gold", style="filled", label="Ready\nsuspended"];
+	blockedsuspended [ fillcolor="lightpink", style="filled", label="Blocked/suspended"];
+
+}
 
     running -> ready [label="descheduled"];
     ready -> running [label="scheduled"];
@@ -13,4 +18,11 @@ subgraph cluster_inmemory {
     blocked -> ready [label="I/O complete"];
     init -> ready [label="admit"];
     running -> zombie [label="completes"];
+
+   
+    ready -> readysuspended [label="suspend"];
+    readysuspended -> ready [label="activate"];
+    blocked -> blockedsuspended [label="suspend"];
+    blockedsuspended -> blocked [label="activate"];
+    blockedsuspended -> readysuspended [label="I/O complete"];
 }

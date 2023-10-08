@@ -1,0 +1,91 @@
+\chapter{Switching}
+\label{ch:switching}
+
+% \begin{goals}
+%   \begin{enumerate}
+%   \item \textbf{Describe} the typical mechanisms used to time-share among processes.
+%   \item \textbf{Differentiate} between cooperative and preemptive process switching.
+%   \item \textbf{Explain} how machine state is saved during a context switch.
+%   \end{enumerate}
+% \end{goals}
+
+% \begin{reading}
+%   \begin{enumerate}
+%     \item
+%     \citet[Chapter 4]{arpaci-dusseau:2015:operating}\\
+%     \url{http://pages.cs.wisc.edu/~remzi/OSTEP/cpu-mechanisms.pdf}
+%   \end{enumerate}
+% \end{reading}
+
+So far, we know that the OS takes control when a trap occurs from a process.
+This can be used by the CPU to do the work requested in the system call, but it could also be used by the CPU to run a different process instead.
+Here, we take that idea further of itself to show how the CPU may be time-shared amongst multiple processes.
+
+\section{Co-operative multitasking}
+
+Co-operating multitasking is a pattern where a process ``gives up'' or yields control of the CPU to the operating system.
+
+\subsection{Sequence of events}
+
+\begin{enumerate}
+\item Program issues a \textit{yield} system call and traps into the kernel.
+\item Kernel then has control and can \textit{schedule} a different process.
+\item Or, the kernel can resume back into the original process by issuing a return-from-trap instruction.
+\end{enumerate}
+
+
+\subsection{Problem}
+
+Co-operative multitasking depends on programs' behaving according to the rules and regularly issuing the yield instruction.
+\begin{itemize}
+\item Badly written programs.
+\item Inconsiderate programmers.
+\end{itemize}
+
+
+\section{Pre-emptive multitasking}
+
+We need a way for the OS to take control without help from the program.
+An opportunity exists with the hardware interrupts, \autoref{sec:interrupts}, provided by the CPU.
+
+\subsection{Setup}
+
+For pre-emptive multitasking to work, the operating system at boot time must:
+
+\begin{enumerate}
+\item Tell the hardware what code to run when the interrupt occurs.
+\item Switch the timer on so that the interrupts will be generated.
+\end{enumerate}
+
+\subsection{Hardware support}
+
+The hardware must provide some basic support for pre-emptive multitasking: the machine state must be saved sufficiently (onto a kernel stack) so that it can be restored. 
+
+\section{Context switching}
+
+\subsection{Decision}
+
+After the OS regains control (either co-operatively or preemptively), it must decide whether to resume the process or switch to a different one.
+
+The scheduler is the part of the operating system that makes this decision.
+We will explore it in later classes.
+
+If the operating system decides to switch to a different process, it is said that a context switch takes place.
+
+\subsection{Context switch}
+
+We assume that Process~A is executing and that the kernel is going to switch to Process~B when the timer fires (or yield is called).
+
+\begin{enumerate}
+\item Timer interrupt occurs.
+\item Hardware saves A's registers to kernel stack for A.
+\item Trap into kernel occurs, kernel jumps to trap handler.
+\item Kernel handles the trap and decides to run process B.
+\item Saves registers of A to proc struct A.
+\item Restores registers of B from proc struct B.
+\item Switches to kernel stack B.
+\item Return from trap issued into B.
+\item H/W restores B's registers from kernel stack.
+\item Returns from trap (now in the context of B).
+\end{enumerate}
+

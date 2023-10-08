@@ -1,0 +1,118 @@
+\chapter{Scheduling}
+\label{ch:scheduling}
+
+% \begin{goals}
+%   \begin{enumerate}
+%   \item \textbf{Differentiate} a scheduling policy from its mechanism.
+%   \item \textbf{Compare} multiple simple batch scheduling policies.
+%   \end{enumerate}
+% \end{goals}
+
+% \begin{reading}
+%   \begin{enumerate}
+%     \item
+%       \citet[Chapter 5]{arpaci-dusseau:2015:operating}\\
+%       \url{http://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf}
+%     \end{enumerate}
+% \end{reading}
+
+\section{Jobs}
+
+\textbf{Language:} Process = Task = Job
+
+\section{Assumptions}
+\label{sec:scheduling-assumptions}
+
+%\citet{arpaci-dusseau:2015:operating} describes a number of simplifying assumptions when introducing scheduling policies: 
+
+\begin{enumerate}
+\item Each job runs for the same amount of time. \label{item:scheduling-assumption:equal-time}
+\item All jobs arrive at the same time. \label{item:scheduling-assumption:same-arrival-time}
+\item Once started, each job runs to completion. \label{item:scheduling-assumption:run-to-completion}
+\item Jobs only use the CPU, and do not perform I/O. \label{item:scheduling-assumption:cpu-only}
+\item Run-time of each job is known. \label{item:scheduling-assumption:run-time-known}
+\end{enumerate}
+
+\section{Metrics}
+
+To make a quantitative decision, we need a metric to show the relative state of each job.
+Alternative metric could be fairness (i.e. equal access).
+
+\subsection{Turnaround time}
+
+One possible metric of system performance is the \textit{turnaround time}, $T_T$, defined as: 
+
+\begin{align}
+  T_T & = T_C - T_A
+\end{align}
+
+where $T_C$ is the time of completion and $T_A$ is the time of arrival in absolute time.
+
+
+\subsection{Average turnaround time}
+
+We are usually interested in the average turnaround time.
+For a number $N$ of jobs, $j_1, j_2, j_3, ..., j_N$, we have the average turnaround time
+
+\begin{align}
+  \bar{T_T} & = \frac{1}{N} \sum_{k=0}^{N} T_{T,k}
+\end{align}
+
+
+\section{First-In-First-Out (FIFO)}
+
+The first-in-first-out scheduling algorithm runs jobs to completion in the order that they were received.
+
+Consider the following scenario:
+\begin{itemize}
+\item Jobs 1, 2, 3 arrive almost simultaneously at time zero, so $T_A=0$.
+\item Assume that $T_{A,1} < T_{A_2}$, as system must put one job first.
+\end{itemize}
+
+\subsection{FIFO Turnaround time}
+
+If the system starts with job 1 and runs to completion, the completion time for job 1 is then: 
+\begin{align}
+  T_{T,1} & = T_{C,1}
+\end{align}
+Now, for job 2, its turnaround time is affected by the time period that job 1 ran for:
+\begin{align}
+  T_{T,2} & = T_{C,2} - T_{A,2} \\
+          & = T_{C,2}
+\end{align}
+so job 2's turnaround time exceeds job 1 regardless of how long job 2 actually runs for.
+If jobs 1, 2, 3 are otherwise equal, we could work out the average turnaround time as
+\begin{align}
+  \bar{T_T} & = \frac{T_{T,1} + T_{T_2} + T_{T_3}}{3} 
+\end{align}
+
+\subsection{Convoy phenomenon}
+
+If we now break the equal-time assumption (\ref{item:scheduling-assumption:equal-time} from \autoref{sec:scheduling-assumptions}), we see where the FIFO scheduler breaks down.
+
+Assume that the processing time of job 3, $T_{P,3}$ is now 100 times that of job 1:
+\begin{align}
+  T_{P,3} & = 100 T_{P_3}
+\end{align}
+This does not affect the turnaround times of jobs 1 and 2.
+However, if instead the processing time of job 1 is 100 times that of job 2 and 3:
+\begin{align}
+  T_{P,1} & = 100 T_{P,2} = 100 T_{P,3} 
+\end{align}
+Now the turnaround times of job 2 and 3 are directly affected by the turnaround time of job 1, named the convoy phenomenon \citep{blasgen:1979:the-convoy}.
+
+
+\section{Shortest job first (SJF)}
+
+Assuming that all jobs arrive simultaneously and run-time is known (\ref{item:scheduling-assumption:run-time-known} from \autoref{sec:scheduling-assumptions}) we could decide to schedule each job in order of shortest to longest runtime.
+
+\subsection{SJF turnaround time}
+
+With SJF scheduling, the turnaround time of each job is optimised by minimising the jobs running before it.
+
+\subsection{SJF problem: late arrivals}
+
+Whilst SJF can optimally schedule batch processes, it can only do so if it has full knowledge at start time of what jobs are required and how long each one takes.
+
+If we now discard the requirement that jobs arrive at the same time (\ref{item:scheduling-assumption:run-time-known} from \autoref{sec:scheduling-assumptions}), we find that the performance dwindles if a large job happens to arrive first.
+

@@ -1,16 +1,11 @@
 digraph G {
 
-subgraph cluster_inmemory {
 	running [fillcolor=lawngreen, style="filled"];
 	ready [fillcolor=gold, style="filled"];
-	blocked [fillcolor=lightpink, style="filled"];
-	}
 	init, zombie [fillcolor=plum1, style="filled"];
 
     running -> ready [label="descheduled"];
     ready -> running [label="scheduled"];
-    running -> blocked [label="I/O request"];
-    blocked -> ready [label="I/O complete"];
-    init -> ready [label="admit"];
+    init -> running [label="enters main()"];
     running -> zombie [label="completes"];
 }

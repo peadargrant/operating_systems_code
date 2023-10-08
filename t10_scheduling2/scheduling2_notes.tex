@@ -1,0 +1,80 @@
+\chapter{Scheduling 2}
+\label{ch:scheduling-2}
+
+% \begin{goals}
+%   \begin{enumerate}
+%   \item \textbf{Quantify} scheduling using response time.
+%   \item \textbf{Analyse} time slicing using round robin scheduling.
+%   \end{enumerate}
+% \end{goals}
+
+% \begin{reading}
+%   \begin{enumerate}
+%     \item
+%       \citet[Chapter 5]{arpaci-dusseau:2015:operating}\\
+%       \url{http://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf}
+%     \end{enumerate}
+% \end{reading}
+
+\section{Metrics}
+
+The use of the turnaround time is most appropriate when describing non-interative batch processes that do not give any feedback when running.
+Alternatively, we may be interested in the response time: 
+
+\subsection{Response time}
+\label{sec:response-time}
+
+The response time, $T_R$, is defined as: 
+\begin{align}
+  T_R = T_F - T_A \label{eq:response-time}
+\end{align}
+where $T_F$ is the first-run time of the process (i.e. when it first starts) and $T_A$ denotes the arrival time as before.
+
+\section{Round-Robin (RR) scheduling}
+\label{sec:rr}
+
+Round-Robin (RR) scheduling, also called time slicing, runs each process for a predefined slice of time.
+
+\subsection{Time slice length}
+
+Time slice length is the key parameter for RR scheduling:
+\begin{itemize}
+\item Make it \textbf{short enough} to attain required response time.
+\item Make it \textbf{long enough} to amortize the cost of process switching.
+\end{itemize}
+
+\subsection{Costs of context switching}
+
+\begin{itemize}
+\item Saving and restoring machine registers is low-cost, but:
+\item Modern chips have a lot of hardware-based performance boosts: caches, translation lookaside buffers (see later), branch predictors etc.
+\end{itemize}
+
+\subsection{Suitability}
+
+RR is technically a fair scheduling algorithm (response time), but at the cost of performance (turnaround time).
+
+\section{Incorporating I/O}
+
+Two assumptions remain:
+\begin{itemize}
+\item each process does no I/O (\ref{item:scheduling-assumption:cpu-only} from \autoref{sec:scheduling-assumptions})
+\item that the runtime is known a priori (\ref{item:scheduling-assumption:run-time-known} from \autoref{sec:scheduling-assumptions})
+\end{itemize}
+
+\subsection{I/O}
+
+An I/O request \textit{blocks} a process until it completes:
+\begin{itemize}
+\item A scheduler that waits for the I/O operation to complete is wasting CPU time.
+\item Can segment a job into multiple CPU burst sub-jobs.
+\item Schedule other jobs (or sub-jobs) while waiting for blocking operation to complete.
+\end{itemize}
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "os_notes"
+%%% End:
