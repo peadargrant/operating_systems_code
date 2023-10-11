@@ -1,0 +1,132 @@
+\chapter{Multi-level feedback}
+\label{ch:multi-level-feedback}
+
+% \begin{goals}
+%   \begin{enumerate}
+%   \item \textbf{Recognise} inherent simplifications in basic scheduling algorithms.
+%   \item \textbf{State} key assumptions and problem for real-world scheduling.
+%   \item \textbf{Conceptualise} the multi-level feedback queue.
+%   \item \textbf{Mitigate} against starvation and gaming in MLFQ systems.
+%   \end{enumerate}
+% \end{goals}
+
+% \begin{reading}
+%   \begin{enumerate}
+%   \item
+%     \citet[Chapter 8]{arpaci-dusseau:2015:operating}\\
+%     \url{http://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched-mlfq.pdf}
+%   \end{enumerate}
+% \end{reading}
+
+\section{Real-world scheduling}
+
+So far, the basic schedulers we've looked at have relied on various simplifying assumptions.
+
+\subsection{Aims}
+
+\begin{enumerate}
+\item Optimise the turnaround time (like SJF, STCF).
+\item Minimise response time (like RR)
+\end{enumerate}
+
+\subsection{Problems}
+
+\begin{enumerate}
+\item We don't know how long a process will take.
+\item We don't know what I/O a process might/might not undertake.
+\item We don't know how long any particular I/O operation might be.
+\item A repeated I/O operation mightn't take the same time each time.
+\end{enumerate}
+
+
+\section{Multi-level feedback queue (MLFQ)}
+
+Multiple queues, with each assigned a different \textbf{priority} level:
+\begin{itemize}
+\item A job is always in one single queue.
+\end{itemize}
+
+\section{MLFQ basic rules}
+\label{sec:mlfq-rules}
+
+\citet[Chapter 8]{arpaci-dusseau:2015:operating} outlines the basic MLFQ rules:
+
+\begin{enumerate}
+\item If $P_A>P_B$, job $A$ runs. \label{item:mlfq-rule:greater-priority}
+\item If $P_A=P_B$, $A$ and $B$ run RR. \label{item:mldq-rule:equal-priority}
+\end{enumerate}
+
+Although we could have priorities known a-priori, MLFQ implementations usually use the scheduler to assign and vary job priorities based on observed behaviour:
+
+
+\begin{enumerate}
+  \setcounter{enumi}{2}
+\item Job arrives in highest priority queue. \label{item:mlfq-rule:arrives}
+\item While running, if the job:
+  \begin{enumerate}
+  \item uses entire time, priority is reduced. \label{item:mlfq-rule:priority-down}
+  \item gives up before time slice finished, stays the same. \label{item:mlfq-rule:stays-same}
+  \end{enumerate}
+
+\end{enumerate}
+
+\section{MLFQ Problems}
+\label{sec:mlfq-problems}
+
+\begin{description}
+\item[Starvation:] Lower-running process will never get any CPU time if interactive jobs keep appearing.
+\item[Changing process:] what happens if a job alternates between batch computation and interactivity?
+\item[Gaming:] since a process can control whether it stays in the same queue or is deprioritised, it can issues spurious I/O requests to trick the scheduler.
+\end{description}
+
+\section{Priority boost}
+
+We add a further rule: 
+
+\begin{enumerate}
+  \setcounter{enumi}{4}
+\item After some time period $S$, move all jobs in system to topmost queue \label{item:mlfq-rule:priority-boost}
+\end{enumerate}
+
+The value of $S$ is critical:
+\begin{itemize}
+\item too high $S$ will starve long-running batch jobs
+\item too low $S$ will prevent interactive jobs getting share of resources.
+\end{itemize}
+
+\section{Accounting}
+
+Our MLFQ scheduler can still be gamed by a process to retain its priority level.
+Instead we can say:
+\begin{enumerate}
+  \setcounter{enumi}{3}
+\item Once a job's time allotment at a given level is used up, it is demoted.
+\end{enumerate}
+With this policy in place, a process can no longer retain its current priority by issuing (possibly bogus / throwaway) I/O requests.
+
+\section{MLFQ parameters}
+
+MLFQ relies on a number of key parameters:
+
+\begin{enumerate}
+\item Number of queues
+\item Time slice
+\item How often to priority boost?
+\end{enumerate}
+
+\subsection{Queue-specific time slices}
+
+Most MLFQ systems will use differing time slices on different queues:
+\begin{description}
+\item[High-priority queues] use shorter time slices (e.g. $<10$~ms).
+\item[Lower priority queues] use longer time slices (e.g. $n\times100$~ms).
+\end{description}
+
+\subsection{Priority restriction}
+
+\begin{itemize}
+\item Some schedulers will prevent certain processes gaining highest priority (e.g. may restrict to OS processes, not user jobs).
+\item Can sometimes request specific priority (e.g. the \texttt{nice} utility on UNIX).
+\end{itemize}
+
+

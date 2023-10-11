@@ -1,0 +1,134 @@
+\chapter{Lottery scheduling}
+\label{ch:lottery}
+
+% \begin{goals}
+%   \begin{enumerate}
+%   \item \textbf{Design} scheduler to share CPU time proportionally.
+%   \item \textbf{Implement} sharing mechanisms to minimise overhead.
+%   \item \textbf{Evaluate} the effectiveness of fair share scheduling.
+%   \end{enumerate}
+% \end{goals}
+
+% \begin{reading}
+%   \begin{enumerate}
+%   \item
+%     \citet[Chapter 9]{arpaci-dusseau:2015:operating}\\
+%     \url{http://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched-lottery.pdf}
+%   \end{enumerate}
+% \end{reading}
+
+
+\section{Proportional share}
+
+So far, the schedulers studied try to optimise either turnaround or response time: 
+
+\begin{itemize}
+\item FIFO, SJF, STCF optimise turnaround time.
+\item RR optimises response time.
+\item MLFQ tries to reasonably compromise.
+\end{itemize}
+
+Instead, we could try a scheduling metric that guarantees each job a certain amount of CPU time: \textbf{proportional or fair-share scheduler}:
+
+\begin{itemize}
+\item This may be equal or unequal for all processes.
+\end{itemize}
+
+\section{Per-process accounting}
+\label{sec:per-process-accounting}
+
+A naive implementation of fair-share scheduling would require per-process accounting.
+We would need to know:
+\begin{itemize}
+\item What percentage of CPU time a process is entitled to use?
+\item What CPU time the process has used thus far?
+\end{itemize}
+There is \textbf{too much} information to keep track of.
+
+
+\section{Lottery}
+
+Instead, we can allocate tickets to processes (or users) and then draw tickets at random:
+\begin{itemize}
+\item Per-process accounting, \autoref{sec:per-process-accounting}, is deterministic.
+\item Lottery scheduling is instead probabilistic. 
+\end{itemize}
+
+\subsection{Tickets}
+
+Tickets represent a process' entitlement to the CPU on average:
+\begin{itemize}
+\item Two processes, $A$ and $B$.
+\item $A$ has 75\% of tickets (0--74)
+\item $B$ has only 25\% (75--99).
+\end{itemize}
+We expect that over a long period of time this will correspond to the actual allocation.
+
+\subsection{Draw}
+
+The process that runs is \textit{drawn}:
+
+\begin{enumerate}
+\item At predetermined interval (e.g. each time slice), the scheduler will pick a number at random from 1-100.
+\item Process associated with that ticket is run: i.e. context switch happens.
+\end{enumerate}
+
+\subsection{Mechanism}
+
+Two (and probably more) possibilities: 
+
+\begin{itemize}
+\item Array with per-ticket element pointing to job.
+\item List with jobs and total ticket value.
+\end{itemize}
+
+\section{Unfairness metric}
+
+The unfairness metric, $U$, is simply:
+\begin{align}
+  U & = \frac{\mbox{time first job completes}}{\mbox{time second job completes}} \label{eq:unfairness-metric}
+\end{align}
+Note:
+\begin{itemize}
+\item Perfectly fair scheduler would have $U=1$.
+\item The same two values can produce two different $U$ values.
+\end{itemize}
+
+\section{Ticketing mechanisms}
+
+The use of ticketing permits a number of useful reallocation possibilities:
+
+\subsection{Ticket currency}
+
+Global tickets are converted to tickets in the currency of the user
+
+\begin{itemize}
+\item Ticket currency is useful where jobs are owned by two competing users:
+\item User can freely allocate tickets among jobs.
+\item User can allocate tickets in suitable values.
+\end{itemize}
+
+\subsection{Ticket inflation}
+
+A process can (if the system design permits it) temporarily boost the value of the tickets that it owns.
+
+
+\section{Stride scheduling}
+
+\subsection{Stride}
+
+Each job has a \textit{stride}, inversely proportional to the number of tickets it owns.
+\begin{align}
+  \mbox{stride} & = \frac{\mbox{large constant}}{\mbox{number of tickets}} \label{eq:stride}
+\end{align}
+
+\subsection{Pass}
+
+As well as a fixed stride value, each job has a pass value which is incremented by the stride each time the process runs.
+
+After each time slice, choose the job with the lowest pass value.
+
+\subsection{Disadvantages}
+
+Stride scheduling has global state.
+
