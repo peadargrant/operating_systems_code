@@ -1,0 +1,71 @@
+\chapter{Scheduling lab}
+\label{ch:scheduling-lab}
+
+Complete these exercises on paper.
+Then type the solution as best you can into a text file named \texttt{scheduling\_exercises.txt} in the \texttt{week04} folder of your \texttt{os\_labs} repository.
+
+\begin{enumerate}
+
+\item 
+  A job arrives into a system at t=0, starts executing at t=3 and completes at t=8.
+  \begin{enumerate}
+  \item What is the processing time for this job?
+  \item What is the turnaround time for this job?
+  \item What is the response time for this job?
+  \end{enumerate}
+
+\item \label{question:scheduling-lab:fifo-jobs}
+  4 jobs arrive into a FIFO scheduler at approximately the same time (t=0) in order:\\
+  Job 0 takes 300 seconds to complete, Job 1 takes 40 seconds, Job 2 takes 30 seconds and Job 4 takes 50 seconds.
+  \begin{enumerate}
+  \item What order will the jobs run in?
+  \item Calculate the turnaround time for Job 2.
+  \item Calculate the average turnaround time for the system.
+  \end{enumerate}
+  
+\item
+  The same set of jobs as in question~\ref{question:scheduling-lab:fifo-jobs} arrive into an SJF scheduler.
+  \begin{enumerate}
+  \item What order wil the jobs run in?
+  \item Calculate the turnaround time for Job 2.
+  \item Calculate the average turnaround time for the system.
+  \item What is the percentage change of the average turnaround time compared to the FIFO scheduler?
+  \item What phenomenon has switching from FIFO to SJF avoided?
+  \end{enumerate}
+
+\item \label{question:scheduling-lab:fablab-jobs}
+  A local digital fabrication lab implements a scheduling system to control a CNC mill.
+  Jobs are submitted by FabLab users directly from CAD workstations.
+  Jobs arrive as follows:
+\begin{verbatim}
+Job  Arrives     Run-time
+===  ==========  =========
+  0    09:00:02   10 mins
+  1    09:00:03    2 hours
+  2    09:00:05    2 hours
+  3    09:04:35    1 hour
+  4    09:32:36   30 mins
+  5    10:24:01   20 mins
+\end{verbatim}
+  Assume that the scheduler update the queue every minute on the minute.
+  The scheduler is placed in FIFO mode.
+  From this information determine:
+  \begin{enumerate}
+  \item The order that the jobs will run in.
+  \item The turnaround time for Job 2.
+  \item The average turnaround time.
+  \item The average response time.
+  \end{enumerate}
+
+\item Utilising the same information as in question~\ref{question:scheduling-lab:fablab-jobs}, the scheduler is instead operated in SJF mode.
+  Determine:
+  \begin{enumerate}
+  \item The order that the jobs will run in.
+  \item The turnaround time for Job 2.
+  \item The average turnaround time.
+  \item The average response time.
+  \end{enumerate}
+
+\end{enumerate}
+
+Add, commit and push the solution to GitLab.
