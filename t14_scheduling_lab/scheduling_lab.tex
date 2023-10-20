@@ -1,0 +1,76 @@
+\chapter{Scheduling lab}
+\label{ch:scheduling-lab}
+
+\section{Setup}
+
+Do do this lab you will need:
+\begin{enumerate}
+\item Python
+\item Bash / PowerShell
+\end{enumerate}
+
+\section{Exercises}
+
+This lab is to be completed in \texttt{week05} of your \texttt{os\_labs} GitLab folder.
+
+\begin{enumerate}
+
+\item
+  Copy all the \texttt{.json} and \texttt{.py} files from this folder into your \texttt{week05} folder. 
+
+\item 
+  You are given a number of jobs in the file \texttt{jobs1.json}.
+  Write a python program called \texttt{job\_list.py} that will read in this file and display it in the following format to the screen:
+\begin{verbatim}
+J0 [arrives t=0, duration 10]
+J1 [arrives t=0, duration 10]
+J2 [arrives t=0, duration 20]
+\end{verbatim}
+  
+\item
+  Modify your \texttt{job\_list.py} program to accept the filename as an argument (NOT via input).
+  (Hint: look at \texttt{job\_generator.py} for how to do this using \texttt{argparse} module.)
+  Verify that it works with the provided \texttt{jobs2.json} and \texttt{jobs3.json}.
+
+\item
+  Use the \texttt{job\_generator.py} program to generate a new list of 7 jobs, max arrival time 0 and max duration 1000 in the file \texttt{jobs4.json}.
+  (The \texttt{job\_generator.py} program doesn't directly write to files - use the shell redirection > in bash or the \texttt{Out-File} cmdlet in PowerShell to redirect its output to a file.)
+
+\item
+  Test that your \texttt{job\_list.py} program can correctly display the new \texttt{jobs4.json} file that you have made.
+
+\item
+  Save the output of your \texttt{job\_list.py} program as \texttt{job\_list\_output.txt} using either > or \texttt{Out-File} as appropriate.
+
+\item \label{step:scheduling-lab:fifo}
+  Write a new python program called \texttt{fifo.py} that reads a specified input file and computes for each job in the case of FIFO scheduling:
+  \begin{enumerate}
+  \item The time it first runs.
+  \item The time it completes.
+  \item Its response time.
+  \item Its turnaround time.
+  \end{enumerate}
+  Also compute the average response time and average turnaround time. 
+  Output should be in the following format, ordered by when the job is started:
+\begin{verbatim}
+J0 [start = 0, completes = 10, response = 0, turnaround = 10]
+J1 [start = 10, completes = 20, response = 10, turnaround = 20]
+J2 [start = 20, completes = 30, response = 20, turnaround = 30]
+average response time: 15
+average turnaround time: 30
+\end{verbatim}
+
+\item
+  Write a new Python program called \texttt{sjf.py} that does the same as step~\ref{step:scheduling-lab:fifo} but for a SJF scheduler.
+
+\item
+  Construct an input file to demonstrate the convoy phenomenon named \texttt{convoy_jobs.json}.
+  Demonstrate by capturing the output of \texttt{fifo.py} and \texttt{sjf.py} to a single file \texttt{convoy_output.txt} that the SJF scheduler avoids the convoy phenomenon.
+  (Hint: look up how to append to a file!)
+  
+\end{enumerate}
+
+\section{Submission}
+
+Make sure to add, commit and push your work to your GitLab repository.
+
