@@ -19,7 +19,7 @@ while len(jobs) < args.njobs:
     job = {}
     job['name'] = "J%s" % len(jobs)
     job['arrival'] =  randint(0, args.max_arrival_time)
-    job['duration'] = args.max_run_time if args.equal else randint(0, args.max_arrival_time)
+    job['duration'] = args.max_run_time if args.equal else randint(0, args.max_run_time)
     jobs.append(job)
 
 print(json.dumps(jobs))
