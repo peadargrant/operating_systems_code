@@ -1,0 +1,137 @@
+\chapter{Address spaces}
+\label{ch:address-spaces}
+
+% \begin{goals}
+%   \begin{enumerate}
+%   \item \textbf{Conceptualise} the idea of an abstracted address space.
+%   \item \textbf{Identify} the goals of a virtual memory system.
+%   \end{enumerate}
+% \end{goals}
+
+% \begin{reading}
+%   \begin{enumerate}
+%   \item
+%     \citet[Chapter 13]{arpaci-dusseau:2015:operating}\\
+%     \url{http://pages.cs.wisc.edu/~remzi/OSTEP/vm-intro.pdf}
+%   \end{enumerate}
+% \end{reading}
+
+\section{Address space}
+
+The physical memory of a computer is divided up into blocks of a specific size.
+\begin{itemize}
+\item Each block has an address so it can be accessed to read from or write to the block, \autoref{fig:physical-address-space}.
+\item Consider a situation of a single-tasking operating system where the operating system occupies the lowest portion and the running process has access to the upper portion.
+\end{itemize} 
+
+\begin{figure}[htbp]
+  \centering
+\begin{verbatim}
+                  Address
++---------------+ 0
+|               |
+| Operating     |
+| system        |
+|               |
++---------------+ >0, <max
+|               |
+| User program  |
+| instructions  |
+| and data      |
+|               |
+|               |
+|               |
+|               |
+|               |
++---------------+ max
+\end{verbatim}
+  \caption{Physical address space}
+  \label{fig:physical-address-space}
+\end{figure}
+
+\section{Multitasking}
+
+We have seen that the CPU is shared in time.
+Memory is instead shared in space.
+
+\begin{figure}[htbp]
+  \centering
+\begin{verbatim}
+                  Address
++---------------+ 0
+| Operating     |
+| system        |
++---------------+
+| Process 1     |
+|               |
++---------------+
+| free space    |
+|               |
++---------------+
+| Process 2     |
+|               |
++---------------+
+| Process 3     |
+|               |
++---------------+
+| free space    |
+|               |
++---------------+
+| Process 4     |
+|               |
++---------------+ max
+\end{verbatim}
+  \caption{Multi-program address space}
+  \label{fig:multi-address-space}
+\end{figure}
+
+
+\section{Process address space}
+
+Focusing on the address space of a single process, there are three key elements:
+\begin{description}
+\item[Instructions:] machine language instructions for direct execution by the processor.
+\item[Stack:] for anything \texttt{push}ed on or \texttt{pop}ped off the stack. In general this means arguments and local variables.
+\item[Heap:] for dynamically allocated memory using \texttt{malloc} or \texttt{new}.
+\end{description}
+
+\begin{figure}[htbp]
+  \centering
+\begin{verbatim}
+                  Address
++---------------+ 0
+| Program code  | <--- IP
+| /instructions |
++---------------+ >0, <max
+| Heap          |
+|               |
++---------------+
+| free          |
+| space         |
++---------------+ <--- SP
+|               |
+| Stack         |
+|               |
++---------------+ max
+\end{verbatim}
+  \caption{Process address space}
+  \label{fig:process-address-space}
+\end{figure}
+
+\section{Virtual memory system}
+
+The basic function of a virtual memory system is to take a memory address from the CPU and translate it to a physical address in memory.
+
+Most virtual memory systems rely on hardware support.
+
+(As an analogy, consider a block of Airbnb apartments: each apartment has a living room, bedrooms, kitchen, bathroom etc.  Once you're in an apartment you don't know the difference!)
+
+\section{Key goals}
+
+\begin{description}
+\item[Transparency:] the virtualised address space must look (to the process) as if it has an isolated physical address space.
+\item[Efficiency:] virtualisation must not impose a (measurable) performance penalty. 
+\item[Protection:] processes must be isolated from each other so that a malfunctioning or malicious process cannot alter contents of another. 
+\end{description}
+
+
