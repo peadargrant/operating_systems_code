@@ -1,0 +1,147 @@
+\chapter{Address translation}
+\label{ch:address-translation}
+
+% \begin{goals}
+%   \begin{enumerate}
+%   \item \textbf{Describe} the mechanism of address translation to relocate a process' address space.
+%   \item \textbf{Specify} necessary hardware and OS support for address translation.
+%   \end{enumerate}
+% \end{goals}
+
+% \begin{reading}
+%   \begin{enumerate}
+%   \item
+%     \citet[Chapter 15]{arpaci-dusseau:2015:operating}\\
+%     \url{http://pages.cs.wisc.edu/~remzi/OSTEP/vm-mechanism.pdf}
+%   \end{enumerate}
+% \end{reading}
+
+\section{Goal}
+
+We want to map a virtual per-process address space $V$ in to the physical shared address space $P$.
+
+\section{Nomenclature}
+
+Assume that we are considering some process $x$: 
+
+\begin{itemize}
+\item Machine has address space from $0$ to $P_1$.
+\item $x$ occupies physical address space from $P^x_0$ to $P^{x}_1$.
+\item $V$ is a virtual address from $0$ to $V^x_1$ as seen by $x$.
+\end{itemize}
+
+\section{Assumptions}
+
+To develop the key ideas, we make the following assumptions about the address space of each process in the system:
+
+\begin{enumerate}
+\item continuguous in physical memory.
+\item less than total size of physical memory.
+\item same size as all other process' address spaces.
+\end{enumerate}
+
+We will also assume that a process is loaded from its processor-specific machine language representation (i.e. is not compiled or interpreted at runtime!)
+
+\section{Relocation by offset}
+
+Relocation is merely dividing up each memory space to provide an offset.
+Firstly we assume that a virtual address $Vx$ that process $x$ wishes to access is translated to the physical address $P$:
+\begin{align}
+  P & = f( V, x )
+\end{align}
+
+The simplest type of relocation we can have involves an offset:
+\begin{align}
+  P & = V + P_0^x \label{eq:offset}
+\end{align}
+
+This idea can be implemented statically or dynamically.
+
+\section{Static relocation}
+
+Static relocation involves the use of a \textbf{loader} that rewrites all memory addresses in the code to implement \autoref{eq:offset}.
+Although simple, this idea is no longer used in practice: 
+
+\begin{itemize} 
+\item No inter-process bounds-checking.
+\item Cannot move process' memory once loaded (see later on).
+\end{itemize}
+
+\section{Dynamic relocation}
+
+Dynamic relocation relies on hardware to support to provide bounds-checked offsets in hardware.
+First described by \citet{saltzer:1974:the-protection}, it relies on two registers in the CPU that defines the chunk of physical memory assigned to a process.
+
+\begin{description}
+\item[Base register] specifies the physical address where the process' address space starts (i.e. the offset).
+\item[Bounds register] specifies the physical address where the process' address space ends.
+\end{description}
+
+\subsection{Dynamic relocation process}
+
+At load time, OS sets base register to the location in memory where the address space starts.
+
+When the program accesses address $V$:
+\begin{enumerate}
+\item $P=V+P_0^x$ used to generate $P$.
+\item If $P>P^x_1$, exception raised.
+\item Otherwise, access transparently happens.
+\end{enumerate}
+
+Although simple, these operations rely on both hardware and OS support.
+
+\subsection{Out-of-bounds}
+
+If $P>P^x_1$ an exception is raised.  Control returns to the OS, which will normally terminate the offending process.
+
+\section{Hardware support}
+
+\citet[Figure 15.3]{arpaci-dusseau:2015:operating} summarises the hardware features required to implement dynamica relocation. 
+Briefly, CPU must provide:
+\begin{description}
+\item[Registers (x2)] to store the base and bounds addresses.
+  \begin{itemize}
+  \item Must not be accessible in User mode! So, CPU requires user and kernel modes (assumed!)
+  \item Special instructions in instruction set to update these.
+  \end{itemize}
+\item[Arithmetic] circuitry to calculate offsets, \autoref{eq:offset}.
+\item[Logic] circuitry to detect out-of-bounds condition.
+\item[Exception] raising and handling abilities.
+\end{description}
+These registers and their accompanying logic form part of the Memory Management Unit (MMU) component of the CPU.
+
+
+\section{OS support}
+
+The operating system must support the hardware in a few key areas:
+
+\subsection{Free List}
+
+OS must keep track of what processes are using what space. This is normally done in a data structure named a ``free list'' by the operating system: 
+\begin{enumerate}
+\item Identify space when loading a process using the free list.
+\item Update the free list on loading a process.
+\item Update the free list when a process terminates / is terminated.
+\end{enumerate}
+
+\subsection{Context switch}
+
+When a context switch occurs, the base and bounds pointers must be saved and restored along with the rest of the machine state.
+
+These must be kept in a per-process data structure by the operating system.
+
+\subsection{Exception handlers}
+
+The OS must provide the appropriate exception handlers and set them up at boot time.
+CPU instructions necessary to do this are usually privilaged.
+
+\section{Problem}
+
+What about the unused space?
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "os_notes"
+%%% End:
+
