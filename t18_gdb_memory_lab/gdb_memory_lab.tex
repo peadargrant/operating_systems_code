@@ -1,0 +1,135 @@
+\chapter{GDB memory lab}
+\label{ch:gdb-memory-lab}
+
+\section{Introduction}
+
+Today's lab will look at some basic examination of memory using GDB.
+Our programs today are written in C.
+
+The GNU DebuGger (GDB) is a program that lets you run programs line by line, inspecting variables and memory as you go.
+See \href{https://www.sourceware.org/gdb/}{Full capability list}.
+Debuggers in general are very useful tools regardless of what language you're working in.
+We will be using it to get a very basic understanding of how process memory is laid out.
+
+
+\section{Setup}
+
+\begin{enumerate}
+\item Log into your Linux VM on XOA.
+\item Update the \texttt{operating\_systems\_code} git repository using:
+\begin{verbatim}
+cd operating_systems_code
+git pull --rebase
+\end{verbatim}
+\item Go back to your home folder using
+\begin{verbatim}
+cd
+\end{verbatim}
+\item In your \texttt{os\_labs} folder create a \texttt{week06} subdirectory and CD into it.
+\begin{verbatim}
+cd os_labs
+mkdir week06
+cd week06
+\end{verbatim}
+\item Copy the files for today's lab using and confirm using \texttt{ls} that they're in your \texttt{week06} folder:
+\begin{verbatim}
+cp ../../operating_systems_code/*_gdb_memory_lab/* .
+ls -l
+\end{verbatim}
+\end{enumerate}
+
+\section{Memory space exploration}
+
+\begin{enumerate}
+
+\item
+  Use the \texttt{cat} command to print the \texttt{program\_monolith} program to the screen.
+
+\item
+  Read through the program and confirm that you understand what each line principally does.
+  (Don't worry that you are not familiar with C.)
+
+\item
+  Compile the program using \texttt{gcc} as follows:
+\begin{verbatim}
+gcc -g -o program_monolith.exe program_monolith.c
+\end{verbatim}
+  The \texttt{-g} switch tells the compile to include debugging information in the executable file.
+  This increases the exe file size but helps programs like \texttt{GDB} understand what is going on.
+
+\item
+  Test that the program runs as normal using:
+\begin{verbatim}
+./program_monolith.exe
+\end{verbatim}
+
+\item
+  Now we are going to run it using \texttt{gdb}:
+\begin{verbatim}
+gdb program_monolith.exe
+\end{verbatim}
+
+\item
+  GDB is a command-line program but has basic full-screen capabilities to show code, assembly language and more.
+  To enable the full-screen mode we type:
+\begin{verbatim}
+tui enable
+\end{verbatim}
+
+\item
+  Then we can split the screen between the C code and its assembler.
+\begin{verbatim}
+layout split
+\end{verbatim}
+
+\item
+  To keep a record of your session we will turn logging on:
+\begin{verbatim}
+set logging enabled
+\end{verbatim}
+
+\item
+  If we just ran the program now it would run same as before.
+  We want to get it to pause just after starting.
+  To do that we set a \textbf{breakpoint} at the beginning of the \texttt{main} function.
+\begin{verbatim}
+break main
+\end{verbatim}
+  You should see a \texttt{b+} appear in the code and disassembly.
+
+\item
+  Start the program by typing
+\begin{verbatim}
+run
+\end{verbatim}
+You should now see the first line highlighted in both the C and assembly. 
+
+\item
+  Use the \texttt{next} command repeatedly to get to the line that sets \texttt{x}.
+
+\item \label{step:gdb-memory-lab:p-pc-sp}
+  Use the \texttt{p \$pc} and \texttt{p \$sp} commands to show the program counter and stack pointer values.
+
+\item
+  Use next to step to to the next instruction once.
+
+\item
+  Using the same commands from step~\ref{step:gdb-memory-lab:p-pc-sp}, which one has changed and do you know why?
+
+\item
+  Using the command \texttt{x/10x \$sp} to print the first 10 items in the stack can you identify the variable \texttt{x} on the stack?
+
+\item
+  Use \texttt{finish} to program finish executing.  
+
+\item
+  Repeat the same analysis with the \texttt{program\_modular.c} example. 
+  
+\end{enumerate}
+
+
+\section{Submission}
+
+Use git to add all the C files and the gdb.txt log file in today's lab to your repository.
+Then Commit and push before leaving.
+
