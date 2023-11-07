@@ -1,0 +1,158 @@
+\chapter{Segmentation}
+\label{ch:segmentation}
+
+% \begin{goals}
+%   \begin{enumerate}
+%   \item \textbf{Explain} the disadvantages of a sparse address space.
+%   \item \textbf{Describe} the use of segmentation to better utilise physical memory.
+%   \item \textbf{Convert} virtual to physical addresses in a segmented memory model.
+%   \end{enumerate}
+% \end{goals}
+
+% \begin{reading}
+%   \begin{enumerate}
+%   \item
+%     \citet[Chapter 16]{arpaci-dusseau:2015:operating}\\
+%     \url{http://pages.cs.wisc.edu/~remzi/OSTEP/vm-segmentation.pdf}
+%   \end{enumerate}
+% \end{reading}
+
+\section{Goal}
+
+Memory is expensive, too expensive to waste on the unused space between the stack and heap.
+
+It is quite possible for a running process that this unused space would be much greater than the utilised memory, a situation termed a \textbf{sparse address space}.
+
+Can we break up this address space into segments that can be managed separately?
+
+\section{Segmentation basics}
+
+\citet[Chapter 16]{arpaci-dusseau:2015:operating} cites a number of early descriptions of segementation from the 1960's: \citet{greenfield:1962:fact}.
+
+We define a \textbf{segment} to be a contiguous block of in-use memory.
+
+Assuming that the address space consists of instructions, stack and heap, we divide the address space into three segments, one for each.
+The three segments are then independently placed in the physical memory.
+
+MMU must maintain separate base and bounds registers for each segment.
+
+
+\section{Sample segmentation}
+
+Consider a process with instructions, heap and stack.
+
+\subsection{Instructions}
+
+Assume that instructions start at $P^I_0$ and end at $P^I_1$, with corresponding virtual addresses $V^I_0$ to $V^I_1$.
+
+Let $V_1$ denote a virtual address within the instruction portion of the address space.
+With our usual model of code, stack and heap, this virtual address represents a simple offset from zero (in the virtual address space).
+
+The corresponding physical address $P_1$ will be computed:
+\begin{align}
+  P_1 & = P^I_0 + V_1
+\end{align}
+
+Once this has been done, bounds checking will ensure that $P_1<P^I_1$.
+Otherwise an exception will occur.
+
+\subsection{Heap}
+
+Let the heap be located in physical memory between $P^H_0$ and $P^H_1$, with corresponding virtual addresses $V^H_0$ to $V^H_1$.
+The heap is slightly more complicated, because our memory model assumes that it follows the code.
+
+Assume that we want to access a virtual address $V_2$ that falls within the heap segment.
+We must account for the code when calculating the offset.
+
+\begin{align}
+  P_2 & = P^H_0 + V_2 - V^I_1
+\end{align}
+
+
+\section{Segment identification}
+
+The hardware obviously needs to be able to identify the segment that any particular virtual address refers to.
+There are two approaches:
+
+\subsection{Explicit}
+
+Recall that a memory address is merely a base-2 number.
+The explicit approach uses bits in the memory address to identify the segment that an address belongs to.
+
+For example, the upper two bits could be mapped as:
+\begin{description}
+\item[0 0 :] code
+\item[0 1 :] heap
+\item[1 0 :] stack
+\end{description}
+
+\subsection{Implicit}
+
+Implicit segment identification takes advantage of what instruction a virtual address originates from:
+\begin{description}
+\item[Program counter] must be code.
+\item[Stack or base pointer] must be the stack.
+\item[Any other address] must be the heap.
+\end{description}
+
+
+\section{Stack}
+
+The stack is more complex again, since it grows backwards!
+
+Therefore, the hardware must have a bit that defines the direction that the segment grows towards.
+
+The stack starts at $P^S_1$.
+It runs \textbf{backwards} to $P^S_1$, so $P^S_1 \le P^S_0$.
+
+Let the segment size, S, be:
+\begin{align}
+  S & = \left \lvert P^S_0 - P^S_1 \right \rvert \label{eq:segment-size}
+\end{align}
+
+Assuming that the stack begins at virtual address $V^S_0$, 
+A virtual address, $V$, within the stack can be thought of as an offset into the stack address space of:
+\begin{align}
+  \Delta V^+ & = V - V^S_0 \label{eq:stack-offset}  
+\end{align}
+
+We then translate this to a negative offset by subtracting the max segment size from the offset:
+\begin{align}
+  \Delta V^- & = \Delta V^+ - S               
+\end{align}
+
+Then we add this negative offset to the base to arrive at the physical address, $P$, corresponding to the virtual address, $V$.
+\begin{align}
+  P & = P_0^S + \Delta V_-
+\end{align}
+
+\section{Code sharing}
+
+Programs are normally not self-modifying.
+If there are multiple identical running processes, we could assume that their code segments are identical.
+Therefore, these can be shared.
+
+Sharing requires that we have \textbf{protection bits} that define what processes are and are not allowed to do with memory segments:
+\begin{description}
+\item[Code (shared)] segments can be read and executed, but not written to by the process. 
+\item[Stack and heap (per-process)] segments can be read and written to by the processes but are not executable.
+\end{description}
+
+An additional check (in addition to bounds-checking) is now required to ensure that the process uses memory only as allowed by the protection bits.
+Misuse causes an exception that the operating system will be expected to handle.
+
+\section{Granularity}
+
+Segmentation can have a much more granular implementation than just code/stack/heap.
+
+\section{Required OS support}
+
+Operating system must ensure that segments are saved and restored on a context switch.
+It must also manage the free space effectively to ensure that memory can be allocated when required.
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "os_notes"
+%%% End:
+
