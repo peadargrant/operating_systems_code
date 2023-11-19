@@ -1,0 +1,121 @@
+\chapter{Free space management}
+\label{ch:free-space-management}
+
+% \begin{goals}
+%   \begin{enumerate}
+%   \item \textbf{Identify} the challenges of free space management.
+%   \item \textbf{Identify} the different types of fragmentation that may occur.
+%   \item \textbf{Describe} the mechanisms for managing free space.
+%   \item \textbf{Explain} principal allocation algorithms.
+%   \end{enumerate}
+% \end{goals}
+
+% \begin{reading}
+%   \begin{enumerate}
+%   \item
+%     \citet[Chapter 17]{arpaci-dusseau:2015:operating}\\
+%     \url{http://pages.cs.wisc.edu/~remzi/OSTEP/vm-freespace.pdf}
+%   \end{enumerate}
+% \end{reading}
+
+
+\section{Fragmentation}
+
+Once variable-size segments are permitted, the issue of fragmentation of available free space arises.
+
+\begin{description}
+\item[External] fragmentation is when available free space is divided among units of different sizes.
+\item[Internal] fragmentation is when an allocator gives out more memory than asked for.
+\end{description}
+
+Both internal and external fragmentation involve unusable wasted free space.
+
+\section{Broad approaches}
+
+\begin{description}
+\item[Compaction] is where the OS attempts to reorganise memory to remove fragmentation.
+  Bad for performance since copying operations take a lot of time.
+\item[Free list] is where the OS maintains a list of free memory locations.
+  When memory is requested, it chooses using a number of possible algorithms.
+\end{description}
+
+
+\section{Assumptions}
+
+\begin{enumerate}
+\item Basic allocation (\texttt{malloc / new}) and deallocation (\texttt{free / delete}) interfaces.
+\item Dealing with external fragmentation only.
+\item Memory cannot be relocated once allocated.
+\end{enumerate}
+
+
+\section{Mechanisms}
+
+\subsection{Splitting}
+
+A contiguous region of memory is divided into two (possibly unequally sized) regions of memory, of which one is usually allocated.
+
+\subsection{Coalescing}
+
+Two contiguous regions of memory may exist that are listed separately as free.
+Coalescing joins the contiguous free regions to form one larger one.
+
+
+\section{Tracking free space}
+
+Tracking of free space can be done easily by including a \textbf{header} before the beginning of each allocated memory block.
+The header has the size of the allocated block.
+
+Free space also has a header, that specifies the size of the free space and also the address of the next chunk of free space.
+
+\section{Allocation algorithms}
+
+\subsection{Best fit}
+\label{sec:best-fit}
+
+Gives location closest in size to that requested:
+\begin{itemize}
+\item Simple theoretical implementation: reduces wasted space.
+\item Performance penalty due to search.
+\end{itemize}
+
+
+\subsection{Worst-fit}
+\label{sec:worst-fit}
+
+Finds the largest chunk and splits it so as to allocate the requested size to the process:
+\begin{itemize}
+\item Attempts to keep large chunks of memory free.
+\item Similar performance penalty to best fit.
+\item Shown to have excessive fragmentation.
+\end{itemize}
+
+
+\subsection{First fit}
+\label{sec:first-fit}
+ 
+Assigns the first block of memory large enough for the request:
+\begin{itemize}
+\item Faster than best fit and worst fit.
+\end{itemize}
+
+\subsection{Next fit}
+\label{sec:next-fit}
+
+Same as first fit, but the search picks up from the previous location on subsequent allocation requests.
+\begin{itemize}
+\item Spreads searches throughout free space more uniformly.
+\end{itemize}
+
+\subsection{Buddy}
+
+Splits free space until request exceeds half of free block.
+
+
+\section{Remaining issues}
+
+Segmentation allowed the physical memory space to be divided and allocated in chunks of varying size.
+The resultant fragmentation complicates allocation.
+We'll next expore a different approach.
+
+
