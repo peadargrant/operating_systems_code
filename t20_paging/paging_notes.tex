@@ -1,0 +1,103 @@
+\chapter{Paging}
+\label{ch:paging}
+
+%\begin{goals}
+%  \begin{enumerate}
+%  \item \textbf{Evaluate} inherent difficulties with segmentation.
+%  \item \textbf{Describe} the mechanism of paging to virtualise memory.
+%  \end{enumerate}
+%\end{goals}
+
+%\begin{reading}
+%  \begin{enumerate}
+%  \item
+%    \citet[Chapter 18]{arpaci-dusseau:2015:operating}\\
+%    \url{http://pages.cs.wisc.edu/~remzi/OSTEP/vm-paging.pdf}
+%  \end{enumerate}
+%\end{reading}
+
+\section{Basic idea}
+
+Paging divides:
+\begin{description}
+\item[virtual address space] into fixed-size \textbf{pages}, or chunks of data, identified by a virtual page number (VPN).
+\item[physical address space] into fixed-size \textbf{page frames}, or chunks of memory, identified by a physical page number (PPN) or physical frame number (PFN).
+\end{description}
+Each page frame can contain one page of data, or it can be empty.
+Note that:
+\begin{align}
+  \mbox{PFN} & \equiv \mbox{PPN}
+\end{align}
+
+The address space of each process is divided into a number of pages.
+Each page is then assigned to a page frame.
+The OS maintains a per-process page table that maps a virtual page number to a page frame.
+
+\section{Addressing}
+
+To divide the address space into pages, we need a way to map a given virtual address to a page frame in physical memory identified by its physical page number.
+
+Each virtual address is considered to be made up of a VPN and offset.
+The VPN is a configurable number of the most significant bits on the address, \autoref{fig:address-vpn-offset}.
+The bits that form the VPN are known as the mask.
+
+\begin{figure}[htbp]
+  \centering
+\begin{verbatim}
+    1 1 0 1 1 1 0 0
+    --- -----------
+     |       |
+     |    offset
+    VPN
+\end{verbatim}
+  \caption{Address as a VPN and offset}
+  \label{fig:address-vpn-offset}
+\end{figure}
+
+The offset is then added to the PPN to give the final physical address as in \autoref{fig:mapping-virtual-physical-paging}. 
+
+\begin{figure}[htbp]
+  \centering
+  INSERT DIAGRAM HERE!
+  \caption{Mapping virtual to physical address using paging}
+  \label{fig:mapping-virtual-physical-paging}
+\end{figure}
+
+\section{Page table}
+
+The page table is a per-process data structure that contains the VPN-to-PPN mappings. Each page table entry (PTE) contains:
+
+\begin{description}
+\item[VPN:] the ``key'' of the mapping
+\item[PPN / PFN:] the physical page number or physical frame number that stores this page.
+\item[Flags] that give more information about the page: 
+  \begin{description}
+  \item[Invalid] (or as the inverse, valid) blocks translations where a mapping does not exist. Allows a sparse memory space.
+  \item[Protection bits] as with segmentation (read-execute, read-write etc)
+  \item[Present] shows whether a page is actually in memory or has been swapped out (coming later!)
+  \end{description}
+\end{description}
+
+It could be imagined as an array of structs, indexed by the VPN.
+
+\subsection{Implementation}
+
+In Intel x86, the page table is in a standard format in RAM pointed to by the CR3 register.
+
+\section{Evaluation}
+
+\subsection{Compared to segmentation}
+
+\begin{itemize}
+\item Avoids external fragmentation.
+\item Allows sparse address spaces.
+\end{itemize}
+
+\subsection{Issues}
+
+\begin{itemize}
+\item Large number of memory accesses to page table.
+\item Size of page table in physical memory.
+\end{itemize}
+
+
