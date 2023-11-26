@@ -1,0 +1,46 @@
+\chapter{Translation lookaside buffers}
+\label{ch:tlb}
+
+% \begin{goals}
+%   \begin{enumerate}
+%   \item \textbf{Evaluate} inherent difficulties with segmentation.
+%   \item \textbf{Describe} the mechanism of paging to virtualise memory.
+%   \end{enumerate}
+% \end{goals}
+
+% \begin{reading}
+%   \begin{enumerate}
+%   \item
+%     \citet[Chapter 19]{arpaci-dusseau:2015:operating}\\
+%     \url{http://pages.cs.wisc.edu/~remzi/OSTEP/vm-tlbs.pdf}
+%   \end{enumerate}
+% \end{reading}
+
+\section{Problem}
+
+\begin{itemize}
+\item Every memory access requires an access to the in-memory page table.
+\item Overhead of memory access negatively affects performance.
+\end{itemize}
+
+\section{Cache}
+
+\section{TLB process}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.5\linewidth]{images_graphviz/tlb}
+  \caption{TLB lookup process}
+  \label{fig:tlb-lookup}
+\end{figure}
+
+\section{Context switches}
+
+\section{Replacement policy}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "os_notes"
+%%% End:
+
