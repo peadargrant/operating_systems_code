@@ -1,0 +1,99 @@
+\chapter{Page table size}
+\label{ch:page-table-size}
+
+% \begin{goals}
+%   \begin{enumerate}
+%   \item \textbf{Identify} problems with linear per-process page tables.
+%   \item \textbf{Propose} solutions for reducing memory requirements of page tables.
+%   \item \textbf{Evaluate} increased page size and hybrid paging/segmentation models.
+%   \end{enumerate}
+% \end{goals}
+
+% \begin{reading}
+%   \begin{enumerate}
+%   \item
+%     \citet[Chapter 20]{arpaci-dusseau:2015:operating}\\
+%     \url{http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf}
+%   \end{enumerate}
+% \end{reading}
+
+\section{Large page tables}
+
+\begin{itemize}
+\item Every process in a system has its own page table.
+\item Every page table must hold validity (true/false) for all virtual addresses, and if valid map each to a physical address.
+\item Large overhead of memory required for all page tables, want to reduce this!
+\item Also, consider a situation where the utilised portions of the code, heap and stack space are small within the virtual address space.
+\end{itemize}
+
+\section{Increased page size}
+
+Consider an 8-bit address space, with the pattern:
+\begin{verbatim}
+VPN     OFFSET
+======= =======
+V V V V O O O O
+\end{verbatim}
+With this arrangement, the VPN is 4-bits in size and requires $2^4=16$ entries.
+Consider what would happen if we increased the page table size.
+If we made the offset 5-bits, and consequently a 3-bit VPN:
+\begin{verbatim}
+VPN   OFFSET
+===== =========
+V V V O O O O O
+\end{verbatim}
+The page table itself now requires only $2^3=8$ entries.
+
+\subsection{Problem}
+
+Larger pages waste space, known as internal fragmentation.
+
+As page sizes get larger, proportionally less of the allocated space will actually be used.
+
+\section{Hybrid paging and segmentation}
+
+Hybrid segmentation/paging primarily addresses the sparce address space problem.
+Dividing the classical virtual address space model into pages ignores its common usage pattern.
+
+Idea: have a page table per logical segment.
+Recall:
+\begin{description}
+\item[Base] register holds physical address of segment.
+\item[Bounds] register shows segment size.
+\end{description}
+Use the MMU-resident base/bounds register to hold start/end addresses of page table for that segment, so here:
+\begin{description}
+\item[Base] register holds physical address of page table for segment.
+\item[Bounds] register shows page table size (i.e. how many pages).
+\end{description}
+
+\subsection{Example}
+
+Imagine an 16-bit address space, with the following arrangement:
+\begin{itemize}
+\item Upper 2 bits denote segment. (Explicit)
+\item Next 6 bits denote page.
+\item Last 8 bits denote offset.
+\end{itemize}
+as in:
+\begin{verbatim}
+S S V V V V V V O O O O O O O O
+\end{verbatim}
+
+\subsection{TLB miss handling}
+
+\begin{enumerate}
+\item Segment \texttt{S} bits determine segment, base+bounds pair.
+\item VPN got by shifting VPN bits.
+\end{enumerate}
+
+\subsection{Problems}
+
+Key problems prevent this idea being used more often: 
+
+\begin{itemize}
+\item Assumes a strict adherence to the code/heap/stack pattern.
+\item External fragmentation can arise again, now have page tables of different sizes.
+\end{itemize}
+
+
