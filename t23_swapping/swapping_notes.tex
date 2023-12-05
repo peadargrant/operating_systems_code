@@ -1,0 +1,84 @@
+\chapter{Swapping mechanisms}
+\label{ch:swapping-mechanisms}
+
+\begin{reading}
+  \begin{enumerate}
+  \item
+    \citet[Chapter 21]{arpaci-dusseau:2015:operating}\\
+    \url{http://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys.pdf}
+  \end{enumerate}
+\end{reading}
+
+\section{Assumptions thus far}
+
+\begin{enumerate}
+\item Process address space small compared to physical memory.
+\item All running process' address spaces fit into physical memory.
+\end{enumerate}
+
+\section{Swap space}
+
+Usually dedicated area on disk (slower, cheaper than RAM).
+
+For now, assume very large.
+
+Consider effect of loading running binary from disk (not necesarily swap space, but same idea).
+
+\section{Page table}
+
+\begin{description}
+\item[Present bit] is 1 if a VPN is in a PFN in physical memory. 0 otherwise.
+\item[Page fault] said to occur if PTE for VPN has 0 for present bit.
+\item[Page fault handler] runs to handle a page fault when it occurs (part of OS).
+\end{description}
+
+\section{Handling page fault}
+
+\begin{enumerate}
+\item Process blocked while page fault handled.
+\item Find page on disk (may use PTE bits for PFN to store disk address).
+\item Must swap page into memory.
+\item Update page table: mark as present, update PFN.
+\item Retry instruction:
+  \begin{itemize}
+  \item May generate TLB miss, which is handled as normal.
+  \item Or may update TLB when handling page fault.
+  \end{itemize}
+\end{enumerate}
+
+\section{Paging operations}
+
+\begin{description}
+\item[Page in] where PFN loaded from disk.
+\item[Page out] where PFN written to disk.
+\item[Page replacement policy] decides what PFN to page out when memory is full.
+\end{description}
+
+\section{Control flow}
+
+Possibilities:
+
+\begin{enumerate}
+\item Page present and valid: lookup PTE, cache in TLB.
+\item Page not present but valid: page in, update PTE, lookup.
+\item Page invalid: trap to OS (probably terminate process)
+\end{enumerate}
+
+\section{Swap daemon}
+
+\begin{description}
+\item[Low watermark] is lowest number of free pages we'd like.
+\item[High watermark] is enough free pages.
+\end{description}
+
+Once OS sees fewer than LW pages free, swap/page daemon pages out PFNs to disk until HW pages area available.
+
+(Will generally do this in groups, like I/O.)
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "os_notes"
+%%% End:
+
