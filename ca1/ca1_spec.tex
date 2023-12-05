@@ -1,0 +1,157 @@
+\documentclass[10pt]{article}
+
+\title{CA1 specification}
+\author{Dr Peadar Grant}
+\date{\today}
+
+\usepackage{mathptmx}
+\usepackage[margin=1.5cm,bmargin=2.5cm]{geometry}
+\usepackage{hyperref}
+
+\begin{document}
+
+\maketitle
+
+\begin{description}
+\item[Due date:] as displayed on Moodle.
+\item[Contribution to Module Mark:] as on module descriptor.
+\end{description}
+
+\section{Grading}
+
+Grading will be applied using the following categories for each criterion in the specification:
+\begin{center}
+  \textbf{No grade} (N=0) --- \textbf{Unsatisfactory} (U=20) -- \textbf{Poor} (P=40) -- \textbf{Good} (G=60) -- \textbf{Excellent} (E=80) -- \textbf{Exceptional} (X=100)
+\end{center}
+
+\section{Specification}
+
+You are to build a simulation tool that demonstrates a number of different job scheduling algorithms that we have discussed in class.
+
+\subsection{Scheduling simulator (55\%)}
+
+Your program must obey the following calling convention:
+\begin{verbatim}
+./simulate.py jobs.json
+\end{verbatim}
+where \texttt{jobs.json} is the input JSON file.
+
+\subsubsection{Input}
+
+Input is to be a JSON file in the format:
+\begin{verbatim}
+[
+  {
+    "name": "J0",
+    "arrival": 76,
+    "duration": 5
+  },
+  {
+    "name": "J1",
+    "arrival": 59,
+    "duration": 0
+  },
+  {
+    "name": "J2",
+    "arrival": 44,
+    "duration": 1
+  }
+]
+\end{verbatim}
+You can assume that the runtime is known absolutely and that no I/O or other blocking operations take place.
+
+\subsubsection{Output}
+
+It must show at each time step the process being run using FIFO, SJF, STCF, RR scheduling (with two different time slice values) as follows:
+
+\begin{verbatim}
+T  FIFO SJF  RR1 RR2
+1  JOB1 JOB2 UNKNOWN UNKNOWN
+2  JOB1 JOB1 JOB1 JOB 2
+\end{verbatim}
+
+when any of the following happen, it should print the necessary notifications on a line of their own before the relevant time step: 
+
+\begin{verbatim}
+* ARRIVED: MY_JOB
+* COMPLETE: JOB1
+\end{verbatim}
+
+The scheduler should continue simulating until no jobs run, printing:
+
+\begin{verbatim}
+= SIMULATION COMPLETE, NO JOBS LEFT
+\end{verbatim}
+
+The mechanism you use is entirely up to you. You can either pre-compute the values for each scheduling algorithm or you can run each at each time step - there are different trade-offs inherent in each approach.
+
+
+\subsection{Per-job statistics (15\%)}
+
+Once simulation is complete, your program must output per-job statistics for turnaround time and response time in the following format: 
+
+\begin{verbatim}
+= INDIVIDUAL PER-JOB STATISTICS
+# JOB FIFO SJF STCF RR1 RR2
+T JOB1 10.1 5.2 21.2 4.0 5.0
+T JOB2 10.4 3.3 12.3 13.4 12.0
+
+\end{verbatim}
+
+You must then print the response times in a similar fashion with \texttt{R} replacing \texttt{T}.
+
+
+\subsection{Aggregate statistics (15\%)}
+
+Your program must then output the average turnaround and response times for each scheduling algorithm:
+
+\begin{verbatim}
+= AGGREGATE STATS COMPLETE
+# SCHEDULER AVG_TURNAROUND AVG_RESPONSE
+@ SJF 10.53 30.2 
+@ FIFO 32.2 19.1
+... (put in other schedulers)
+@ RR2 40.0 10.0
+\end{verbatim}
+
+\subsection{Demo scripts (15\%)}
+
+Supply a demo script to run your program 3 times.
+Each demo must be able to be invoked as \texttt{./demo.sh}
+
+Each of the three demo cases should generate files with different overall arrival time and runtime ranges using the \url{ca1_jobs.py} script.
+Run the script with no arguments to see the required command-line parameters.
+There must be at least 10 jobs with a max runtime of at least 5 in all 3 demo runs.
+
+Your program should print the program output and save it also to \texttt{demo\_output1,2,3.txt} etc as appropriate.
+
+\subsection{Source control (10\%)}
+
+You are required to maintain your work in your \texttt{os\_labs} git repository under a folder \texttt{ca1}. 
+It is required that:
+
+\begin{itemize}
+  \item commits are atomic
+  \item clear development timeline evident from history,
+  \item meaningful concise commit messages,
+\end{itemize}
+
+\section{Requirements for grading}
+
+Please note the following requirements carefully:
+
+\begin{itemize}
+\item Files must be presented in Git repo.
+\item All files must have the correct names including case.
+\end{itemize}
+
+If \textit{any} of the above requirements are not satisfied, the file will be treated as not existing, and you \textbf{work will receive zero}. Depending on what file is missing, this may cause other components to fail and receive zero.
+
+
+\section{Academic integrity}
+
+You are reminded that the DkIT academic integrity policy will apply in full.
+Any suspected breaches of academic integrity will be progressed through the official processes without exception.
+\textit{If you are unsure if a particular course of action is acceptable you must check prior to submission!}
+
+\end{document}
