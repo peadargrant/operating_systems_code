@@ -101,3 +101,28 @@ In Intel x86, the page table is in a standard format in RAM pointed to by the CR
 \end{itemize}
 
 
+\section{Lab exercise}
+
+A computer has an 8-bit virtual address space with a 3-bit VPN.
+It has an 8-bit physical address space also with a 3-bit VPN. 
+
+\begin{itemize}
+\item
+	Draw the virtual address space layout for a process with 
+    1 page each of code, heap and stack. 
+	Label the start & end addresses of each valid region.
+	
+\item
+	Assuming that PFNs 0, 1, 3, 7 are already occupied,
+    construct page table for the process showing:
+	\begin{enumerate}
+	\item VPN
+	\item Whether valid
+	\item PFN
+	\item Protection bits (You can use any free PFNs as you see fit.)
+	\end{enumerate}
+
+ 	
+\item
+	Convert the decimal virtual addresses 13, 35 to its physical address. 
+\end{enumerate}

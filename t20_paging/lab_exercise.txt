@@ -1,0 +1,21 @@
+Lab exercise:
+------------
+
+A computer has an 8-bit virtual address space with a 3-bit VPN.
+It has an 8-bit physical address space also with a 3-bit VPN. 
+
+(a) Draw the virtual address space layout for a process with 
+    1 page each of code, heap and stack. 
+	Label the start & end addresses of each valid region.
+	
+(b) Assuming that PFNs 0, 1, 3, 7 are already occupied,
+    construct page table for the process showing:
+	(i)   VPN
+	(ii)  Whether valid
+	(iii) PFN
+	(iv)  Protection bits
+	(You can use any free PFNs as you see fit.)
+	
+(c) Convert the decimal virtual addresses 13, 35 to its physical address. 
+
+[Write answers in text file and put in your os_lab repository]
