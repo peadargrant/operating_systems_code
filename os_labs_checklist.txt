@@ -1,0 +1,15 @@
+Lab git repository
+==================
+
+1. Log into GitLab and check your os_labs code:
+
+2. Weeks we expect:
+
+	week01/firstlab.txt (or any file)
+	week02/hardware.txt (or any file showing VM created)
+	week03/assembly language lab files
+	week04/scheduling problems on paper
+	week05/scheduling lab
+	week06/GDB lab
+	week07/paging in the lab (write solution from lab)
+	
