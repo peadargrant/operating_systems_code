@@ -1,0 +1,24 @@
+Operating systems 
+Exam guidance
+
+Any topic may appear in any question anywhere on the exam.
+
+Focus areas for study:
+
+Multiprogramming; Direct execution;
+Process state diagram
+Zombie state meaning 
+
+Basic batch job scheduler
+Average response / turnaround time
+What schedulers optimise the above ^^
+
+Drawing out virtual address spaces in pages
+Construction of Page Table
+Sample memory address from virtual -> physical
+
+Meaning of swap memory
+Page fault 
+Swap strategies
+
+Boot process sequence
