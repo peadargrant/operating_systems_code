@@ -116,3 +116,11 @@ Whilst SJF can optimally schedule batch processes, it can only do so if it has f
 
 If we now discard the requirement that jobs arrive at the same time (\ref{item:scheduling-assumption:run-time-known} from \autoref{sec:scheduling-assumptions}), we find that the performance dwindles if a large job happens to arrive first.
 
+\section{Shortest Time to Completion First (STCF)}
+
+STCF adds pre-emption to the SJF scheduler.
+This means that when a shorter job arrives after a longer job has started, the longer job can be paused and the shorter one run.
+
+SJF and STCF will be identical if all jobs arrive simultaneously.
+Because STCF can pause an already-started job it can optimise the turnaround time in spite of jobs arriving later than others.
+
