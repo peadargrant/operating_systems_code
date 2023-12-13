@@ -1,0 +1,13 @@
+A set of jobs labelled A-D arrive simulataneously to a job scheduler implementing STCF all at t=10. The runtimes are:
+A = 9
+B = 2
+C = 10
+D = 6
+
+(a) Determine the order in which scheduler will execute jobs.
+
+(b) Determine the average response time of the 4 jobs.
+
+(c) Determine the average turnaround time of the 4 jobs. 
+
+(d) What scheduler could improve the response time? 
