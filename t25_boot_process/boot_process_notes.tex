@@ -1,0 +1,42 @@
+\chapter{Boot process}
+\label{ch:boot-process}
+
+\section{Boot process}
+
+\begin{enumerate}
+\item ROM BIOS loads first-stage bootloader from hard disk.
+\item First-stage bootloader runs from RAM and loads second-stage boot-loader from hard disk.
+\item Second-stage bootloader loads OS into RAM.
+\item Control is transferred to OS.
+\item Boot process is then complete.
+\end{enumerate}
+
+\section{Network booting}
+
+Normally the operating system is loaded from Hard disk.
+It can be instead booted directly from the network (even without a hard disk).
+
+\begin{enumerate}
+\item ROM loads PXE boot code.
+\item PXE issues DHCP request.
+\item DHCP response includes a \texttt{next-server} option that provides IP address of server to load boot file from.
+\item Boot file loaded using Trivial File Transfer Protocol (TFTP).
+\item Control is transferred to the OS. 
+\end{enumerate}
+
+The OS needs to be able to operate in the absence of a fixed hard disk.
+Most currently can't by default.
+Linux and Windows Embedded can however be configured to operate from a RAM disk or NAS-provided root folder.
+
+PXE is often used however to load the minimal OS environments for Windows and Linux installers to run. 
+
+
+\section{Dual-boot systems}
+
+Dual-boot systems were more commonly employed by technical users needing to utilise multiple different OS environments.
+Often this was Linux and Microsoft Windows on PC-based systems, and OSX and Windows on Mac.
+This has decreased in recent years as virtualisation has supplanted it.
+
+The first-stage bootloader loads a second-stage boot loader such as GRand Unified Bootload (GRUB).
+This is configurable such that different partitions holding an OS can be booted or chain-loaded.
+
